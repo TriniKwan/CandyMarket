@@ -11,7 +11,7 @@ namespace CandyMarket.DataAccess
     public class CandyMarketRepository
     {
         const string ConnectionString = "Server=localhost;Database=CandyMarket;Trusted_Connection=True;";
-        public IEnumerable<UserWithCandyInfo> GetUserWithCandyInfo(int userId)
+        public UserWithCandyInfo GetUserWithCandyInfo(int userId)
         {
             //var sql = @"select Candy.[Name] as CandyType, [User].UserId, [User].FirstName + ' ' + [User].LastName as [Name]
             //            from UserCandy
@@ -21,14 +21,15 @@ namespace CandyMarket.DataAccess
             //              on UserCandy.UserId = [User].UserId
             //            where UserCandy.UserId = @userId";
 
-            var sql = @"select [User].FirstName + ' ' + [User].LastName as [Name], UserCandy.UserId, UserCandy.CandyId
-                        from UserCandy
-	                        join [User]
-		                        on UserCandy.UserId = [User].UserId
-                        where UserCandy.UserId = @userId";
+            var sql = @"select [User].FirstName + ' ' + [User].LastName as [Name], [User].UserId
+	                        from [User]
+                        where UserId = @userId";
 
-            var candy = @"select [Name] as CandyType, Candy.CandyId
-                        from Candy";
+            var candy = @"SELECT [Name] as CandyType, Candy.CandyId
+                        FROM Candy
+	                        Join UserCandy
+	                        ON Candy.CandyId = UserCandy.CandyId
+                        WHERE UserCandy.UserId = @userId";
 
             //var owner = @"select [User].FirstName + ' ' + [User].LastName as [Name]
             //            from [User]
@@ -36,16 +37,13 @@ namespace CandyMarket.DataAccess
 
             using (var db = new SqlConnection(ConnectionString))
             {
-                var users = db.Query<UserWithCandyInfo>(sql, new { UserId = userId });
-                var candies = db.Query<Candy>(candy);
+                var user = db.QueryFirstOrDefault<UserWithCandyInfo>(sql, new { UserId = userId });
+                var candies = db.Query<Candy>(candy, new { UserId = userId });
                 //var candyOwner = db.QueryFirstOrDefault<User>(owner, new { UserId = userId });
 
-                foreach (var user in users)
-                {
-                    user.Candy = candies.Where(c => c.CandyId == user.CandyId).Select(c => c.CandyType);
-                }
+                user.Candy = candies;
 
-                return users;
+                return user;
             }
         }
     }

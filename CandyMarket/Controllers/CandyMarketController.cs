@@ -18,6 +18,10 @@ namespace CandyMarket.Controllers
         public IActionResult GetUserWithCandyInfo(int userId)
         {
             var result = _repository.GetUserWithCandyInfo(userId);
+            if (result == null)
+            {
+                return NotFound("No user found");
+            }
             return Ok(result);
         }
     }
