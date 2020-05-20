@@ -13,13 +13,6 @@ namespace CandyMarket.DataAccess
         const string ConnectionString = "Server=localhost;Database=CandyMarket;Trusted_Connection=True;";
         public UserWithCandyInfo GetUserWithCandyInfo(int userId)
         {
-            //var sql = @"select Candy.[Name] as CandyType, [User].UserId, [User].FirstName + ' ' + [User].LastName as [Name]
-            //            from UserCandy
-            //             join Candy
-            //              on UserCandy.CandyId = Candy.CandyId
-            //             join [User]
-            //              on UserCandy.UserId = [User].UserId
-            //            where UserCandy.UserId = @userId";
 
             var sql = @"select [User].FirstName + ' ' + [User].LastName as [Name], [User].UserId
 	                        from [User]
@@ -31,15 +24,10 @@ namespace CandyMarket.DataAccess
 	                        ON Candy.CandyId = UserCandy.CandyId
                         WHERE UserCandy.UserId = @userId";
 
-            //var owner = @"select [User].FirstName + ' ' + [User].LastName as [Name]
-            //            from [User]
-            //            where [User].UserId = @userId";
-
             using (var db = new SqlConnection(ConnectionString))
             {
                 var user = db.QueryFirstOrDefault<UserWithCandyInfo>(sql, new { UserId = userId });
                 var candies = db.Query<Candy>(candy, new { UserId = userId });
-                //var candyOwner = db.QueryFirstOrDefault<User>(owner, new { UserId = userId });
 
                 user.Candy = candies;
 
