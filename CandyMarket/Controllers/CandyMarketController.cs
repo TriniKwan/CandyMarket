@@ -24,5 +24,16 @@ namespace CandyMarket.Controllers
             }
             return Ok(result);
         }
+
+        [HttpGet("candies")]
+        public IActionResult GetAllCandies()
+        {
+            var result = _repository.GetAllCandies();
+            if (result == null)
+            {
+                return NotFound("No candy found");
+            }
+            return Ok(result);
+        }
     }
 }

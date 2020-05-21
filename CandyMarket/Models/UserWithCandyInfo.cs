@@ -10,6 +10,5 @@ namespace CandyMarket.Models
         public string Name { get; set; }
         public int UserId { get; set; }
         public IEnumerable<Candy> Candy { get; set; }
-        //public string Candy { get; set; }
     }
 }

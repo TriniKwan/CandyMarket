@@ -34,5 +34,17 @@ namespace CandyMarket.DataAccess
                 return user;
             }
         }
+
+        public IEnumerable<CandyWithAllInfo> GetAllCandies()
+        {
+            var sql = @"SELECT * FROM Candy";
+
+            using (var db = new SqlConnection(ConnectionString))
+            {
+                var candy = db.Query<CandyWithAllInfo>(sql);
+
+                return candy;
+            }
+        }
     }
 }
