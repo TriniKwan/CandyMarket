@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using CandyMarket.Models;
 using Dapper;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Data.SqlClient;
 
 namespace CandyMarket.DataAccess
 {
     public class CandyMarketRepository
     {
-        const string ConnectionString = "Server=localhost;Database=CandyMarket;Trusted_Connection=True;";
+        const string ConnectionString = "Server=MORT\\SQLEXPRESS;Database=CandyMarket;Trusted_Connection=True;";
         public UserWithCandyInfo GetUserWithCandyInfo(int userId)
         {
 
@@ -44,6 +45,20 @@ namespace CandyMarket.DataAccess
                 var candy = db.Query<CandyWithAllInfo>(sql);
 
                 return candy;
+            }
+        }
+
+        public UserWithCandyInfo AddCandies(int candyId, int userId)
+        {
+            var sql = @$"insert into UserCandy(UserId, CandyId, DateAdded)
+                         values (@userId, @candyId, '{DateTime.Now}')";
+
+            using (var db = new SqlConnection(ConnectionString))
+            {
+                var result = db.QueryFirstOrDefault<UserCandy>(sql, new { UserId = userId, CandyId = candyId });
+
+                var updatedUser = GetUserWithCandyInfo(userId);
+                return updatedUser;
             }
         }
     }

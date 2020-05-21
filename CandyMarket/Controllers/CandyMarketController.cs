@@ -35,5 +35,16 @@ namespace CandyMarket.Controllers
             }
             return Ok(result);
         }
+
+        [HttpPost("userId/{userId}/candy/{candyId}")]
+        public IActionResult AddCandyToUser(int candyId, int userId)
+        {
+            var result = _repository.AddCandies(candyId, userId);
+            if (result == null)
+            {
+                return NotFound("No candy found");
+            }
+            return Ok(result);
+        }
     }
 }
