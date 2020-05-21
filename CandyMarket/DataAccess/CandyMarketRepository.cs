@@ -11,7 +11,7 @@ namespace CandyMarket.DataAccess
 {
     public class CandyMarketRepository
     {
-        const string ConnectionString = "Server=MORT\\SQLEXPRESS;Database=CandyMarket;Trusted_Connection=True;";
+        const string ConnectionString = "Server=localhost;Database=CandyMarket;Trusted_Connection=True;";
         public UserWithCandyInfo GetUserWithCandyInfo(int userId)
         {
 
@@ -45,6 +45,19 @@ namespace CandyMarket.DataAccess
                 var candy = db.Query<CandyWithAllInfo>(sql);
 
                 return candy;
+            }
+        }
+
+        public UserWithCandyInfo Eat(int userId, int candyId)
+        {
+            var sql = @"DELETE FROM UserCandy WHERE UserId = @userId AND CandyId = @candyId;";
+
+            using(var db = new SqlConnection(ConnectionString))
+            {
+                db.ExecuteAsync(sql, new { UserId = userId, CandyId = candyId });
+
+                var updatedUser = GetUserWithCandyInfo(userId);
+                return updatedUser;
             }
         }
 
