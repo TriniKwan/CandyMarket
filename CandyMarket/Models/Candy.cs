@@ -9,6 +9,14 @@ namespace CandyMarket.Models
     {
         public int CandyId { get; set; }
         public string CandyType { get; set; }
-        //public int UserId { get; set; }
+
+    }
+
+    public class CandyWithAllInfo
+    {
+        public int CandyId { get; set; }
+        public string Name { get; set; }
+        public int CategoryId { get; set; }
+        public string Manufacturer { get; set; }
     }
 }
