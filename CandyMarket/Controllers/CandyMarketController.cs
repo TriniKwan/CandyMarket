@@ -14,6 +14,13 @@ namespace CandyMarket.Controllers
     {
         CandyMarketRepository _repository = new CandyMarketRepository();
 
+        [HttpGet]
+        public IActionResult GetAllUsersWithCandy()
+        {
+            var result = _repository.GetAllUsersWithCandy();
+            return Ok(result);
+        }
+
         [HttpGet("userid/{userId}")]
         public IActionResult GetUserWithCandyInfo(int userId)
         {

@@ -36,6 +36,34 @@ namespace CandyMarket.DataAccess
             }
         }
 
+        public IEnumerable<UserWithCandyInfo> GetAllUsersWithCandy()
+        {
+            var sql = @"select [User].FirstName + ' ' + [User].LastName as [Name], [User].UserId
+	                        from [User]";
+
+            var candy = @"SELECT [Name] as CandyType, Candy.CandyId, UserCandy.DateAdded
+                        FROM Candy
+	                        Join UserCandy
+	                        ON Candy.CandyId = UserCandy.CandyId
+                        WHERE UserCandy.UserId = @userId";
+
+            using (var db = new SqlConnection(ConnectionString))
+            {
+                var users = db.Query<UserWithCandyInfo>(sql);
+
+                foreach (var user in users)
+                {
+                    var candies = db.Query<Candy>(candy, new { UserId = user.UserId });
+
+                    user.Candy = candies;
+
+                }
+
+                return users;
+            }
+
+        }
+
         public IEnumerable<CandyWithAllInfo> GetAllCandies()
         {
             var sql = @"SELECT * FROM Candy";
