@@ -140,5 +140,26 @@ namespace CandyMarket.DataAccess
                 return Eat(userId, candyType.CandyId);
             }
         }
+
+        public List<UserWithCandyInfo> TradeCandy(int oldUserId, int userId, int candyId)
+        {
+            var users = new List<UserWithCandyInfo>();
+            var sql = @"UPDATE top(1) UserCandy
+                        SET UserId = @userId
+                        WHERE UserCandy.CandyId = @candyId AND UserCandy.UserId = @oldUserId";
+
+            using (var db = new SqlConnection(ConnectionString))
+            {
+                db.ExecuteAsync(sql, new { OldUserId = oldUserId, UserId = userId, CandyId = candyId});
+
+                var updatedUser = GetUserWithCandyInfo(userId);
+                users.Add(updatedUser);
+
+                var oldUser = GetUserWithCandyInfo(oldUserId);
+                users.Add(oldUser);
+            }
+
+            return users;
+        }
     }
 }

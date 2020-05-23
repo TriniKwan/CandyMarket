@@ -75,5 +75,13 @@ namespace CandyMarket.Controllers
             }
             return Ok(result);
         }
+
+        [HttpPut("oldUserId/{oldUserId}/newUserId/{userId}/candyId/{candyId}")]
+
+        public IActionResult TradeCandy(int oldUserId, int userId, int candyId)
+        {
+            var result = _repository.TradeCandy(oldUserId, userId, candyId);
+            return Ok(result);
+        }
     }
 }
