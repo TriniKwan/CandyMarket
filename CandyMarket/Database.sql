@@ -96,3 +96,7 @@ from UserCandy
 
 select [User].FirstName + ' ' + [User].LastName as [Name]
 from [User]
+
+DELETE FROM UserCandy WHERE UserId = 1 AND CandyId = 6;
+
+select * from UserCandy
