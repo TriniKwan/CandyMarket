@@ -93,5 +93,24 @@ namespace CandyMarket.DataAccess
                 return updatedUser;
             }
         }
+
+        public UserWithCandyInfo EatFlavoredCandy(int userId, string type)
+        {
+            var sql = @"SELECT TOP(1) [Name] as CandyType, Candy.CandyId, Category.[Type], Category.CategoryId
+	                    FROM Candy
+		                    JOIN UserCandy
+		                    ON Candy.CandyId = UserCandy.CandyId
+		                    JOIN Category
+		                    ON Candy.CategoryId = Category.CategoryId
+		                    WHERE UserCandy.UserId = @userId AND Category.[Type] = @type
+                        ORDER BY NEWID()";
+
+            using (var db = new SqlConnection(ConnectionString))
+            {
+                var candyType = db.QueryFirstOrDefault<CandyWithCategory>(sql, new { UserId = userId, Type = type });
+
+                return Eat(userId, candyType.CandyId);
+            }
+        }
     }
 }

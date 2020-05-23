@@ -57,5 +57,16 @@ namespace CandyMarket.Controllers
             }
             return Ok(result);
         }
+
+        [HttpDelete("userId/{userId}/eatFlavor/{type}")]
+        public IActionResult EatFlavoredCandy(int userId, string type)
+        {
+            var result = _repository.EatFlavoredCandy(userId, type);
+            if (result == null)
+            {
+                return NotFound("No candy found; can't eat");
+            }
+            return Ok(result);
+        }
     }
 }
