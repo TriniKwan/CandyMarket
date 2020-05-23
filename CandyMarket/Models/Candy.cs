@@ -9,6 +9,7 @@ namespace CandyMarket.Models
     {
         public int CandyId { get; set; }
         public string CandyType { get; set; }
+        public DateTime DateAdded { get; set; }
 
     }
 

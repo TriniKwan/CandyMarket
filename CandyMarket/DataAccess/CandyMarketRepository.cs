@@ -19,7 +19,7 @@ namespace CandyMarket.DataAccess
 	                        from [User]
                         where UserId = @userId";
 
-            var candy = @"SELECT [Name] as CandyType, Candy.CandyId
+            var candy = @"SELECT [Name] as CandyType, Candy.CandyId, UserCandy.DateAdded
                         FROM Candy
 	                        Join UserCandy
 	                        ON Candy.CandyId = UserCandy.CandyId
@@ -50,14 +50,33 @@ namespace CandyMarket.DataAccess
 
         public UserWithCandyInfo Eat(int userId, int candyId)
         {
-            var sql = @"DELETE FROM UserCandy WHERE UserId = @userId AND CandyId = @candyId;";
+            var candyToDelete = EatOldCandy(userId, candyId);
+
+            var sql = @$"DELETE FROM UserCandy WHERE UserCandy.UserCandyId = {candyToDelete.UserCandyId};";
 
             using(var db = new SqlConnection(ConnectionString))
             {
-                db.ExecuteAsync(sql, new { UserId = userId, CandyId = candyId });
+                db.ExecuteAsync(sql);
 
                 var updatedUser = GetUserWithCandyInfo(userId);
                 return updatedUser;
+            }
+        }
+
+        public UserWithOldestCandy EatOldCandy(int userId, int candyId) 
+        {
+            var sql = @"SELECT TOP(1) DateAdded, [Name] as CandyType, Candy.CandyId, UserCandy.UserCandyId
+                        FROM Candy
+	                        Join UserCandy
+	                        ON Candy.CandyId = UserCandy.CandyId
+                        WHERE UserCandy.UserId = @userId AND UserCandy.CandyId = @candyId
+                        ORDER BY DateAdded";
+
+            using (var db = new SqlConnection(ConnectionString))
+            {
+                var candy = db.QueryFirstOrDefault<UserWithOldestCandy>(sql, new { UserId = userId, CandyId = candyId });
+
+                return candy;
             }
         }
 
