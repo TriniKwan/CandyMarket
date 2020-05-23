@@ -14,6 +14,13 @@ namespace CandyMarket.Controllers
     {
         CandyMarketRepository _repository = new CandyMarketRepository();
 
+        [HttpGet]
+        public IActionResult GetAllUsersWithCandy()
+        {
+            var result = _repository.GetAllUsersWithCandy();
+            return Ok(result);
+        }
+
         [HttpGet("userid/{userId}")]
         public IActionResult GetUserWithCandyInfo(int userId)
         {
@@ -66,6 +73,14 @@ namespace CandyMarket.Controllers
             {
                 return NotFound("No candy found; can't eat");
             }
+            return Ok(result);
+        }
+
+        [HttpPut("oldUserId/{oldUserId}/newUserId/{userId}/candyId/{candyId}")]
+
+        public IActionResult TradeCandy(int oldUserId, int userId, int candyId)
+        {
+            var result = _repository.TradeCandy(oldUserId, userId, candyId);
             return Ok(result);
         }
     }
