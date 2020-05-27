@@ -12,7 +12,12 @@ namespace CandyMarket.Controllers
     [ApiController]
     public class CandyMarketController : ControllerBase
     {
-        CandyMarketRepository _repository = new CandyMarketRepository();
+        CandyMarketRepository _repository;
+
+        public CandyMarketController(CandyMarketRepository repository)
+        {
+            _repository = repository;
+        }
 
         [HttpGet]
         public IActionResult GetAllUsersWithCandy()
